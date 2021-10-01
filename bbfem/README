@@ -1,0 +1,638 @@
+         Bernstein-Bezier Finite Element Method (BBFEM)
+
+Version 1.00
+
+ABOUT BBFEM
+-------------
+
+BBFEM enables efficient computation of the elemental quantities (load vector, mass matrix, 
+stiffness matrix, convective matrix) associated with the finite elements based on Bernstein polynomial
+shape functions. The library implements the algorithms of [1] for the H1 finite elements on triangles 
+and tetrahedra  as well as H(curl) elements on triangles  described in [3]. Since H(curl) is isomorphic 
+to H(div) in 2D, the H(curl) routines can also be used for computing H(div) elemental quantities [2].
+
+
+[1] M. Ainsworth, G. Andriamaro, and O. Davydov. Bernstein-Bezier finite
+elements of arbitrary order and optimal assembly procedures. SIAM J. Sci.
+Comp., 33 (2011), 3087-3109.
+
+[2] M. Ainsworth and G. Andriamaro and O. Davydov, 
+A Bernstein-Bézier basis for arbitrary order Raviart-Thomas finite elements, 
+Constr. Approx., 41 (2015), 1-22.
+
+[3] G. Andriamaro. Bernstein-Bezier Techniques and Optimal Algorithms 
+in Finite Element Analysis, PhD thesis, University of Strathclyde,
+Department of Mathematics and Statistics, Glasgow, UK, 2013.
+
+Installation and usage notes can be found below. 
+
+Send bugs, patches, comments or suggestions on BBFEM to
+Gaelle Andriamaro <amg.gaelle@gmail.com>
+
+Authors    
+
+Mark Ainsworth
+Division of AppliedMathematics
+Brown University
+182 George Street
+Providence, RI 02912
+e-mail: Mark_Ainsworth@Brown.edu
+
+Gaelle Andriamaro
+e-mail: amg.gaelle@gmail.com
+
+Oleg Davydov
+University of Giessen
+Department of Mathematics
+Arndtstrasse 2 
+35392 Giessen
+Germany
+e-mail: oleg.davydov@math.uni-giessen.de
+
+Copyright(C) 2013 MarkAinsworth, Gaelle Andriamaro and Oleg Davydov
+
+License
+
+This package is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This package is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this package; see the file COPYING.  If not, write to
+the Free Software Foundation, 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  
+
+
+GETTING STARTED
+---------------
+
+List of files
+
+bbfem.cpp bbfem.h JacobiGaussNodes.h  bmom2d.cpp 
+convec2d.cpp mass2d.cpp  stiff2d.cpp branching2d.cpp mains2d.cpp  bmom3d.cpp convec3d.cpp 
+mass3d.cpp  stiff3d.cpp branching3d.cpp mains3d.cpp 
+bbfem2dCurl.cpp bbfem2dCurl.h load2dCurl.cpp mass2dCurl.cpp stiff2dCurl.cpp branching2dCurl.cpp
+mains2dCurl.cpp cpu_timing_Residuals2dCurl.cpp
+Makefile
+
+Comments
+
+bbfem.cpp, bbfem.h, bbfem2dCurl.cpp and bbfem2dCurl.h are the source files needed in order to create the bbfem library. 
+The library is created by running the command "make" in the terminal. Once the library has been created, examples for
+computing the elemental quantities using Bernstein-Bezier finite elements are given in the various sample
+files, listed as:
+
+bmom2d.cpp: Sample file for the computation of the B-moments in two dimensions. It makes use of the
+get_Bmoments2d(Bmoment, n, f, Cval, v1, v2, v3, functval) routine which computes B-moments of order n 
+on the triangle T = <v1,v2,v3>. The functval argument serves as a flag which indicates the input type 
+for the B-moments' coefficients: When functval=0, the routine uses a scalar-valued function f as input, 
+whereas when functval=1, the routine uses the array Cval which contains the coefficient values at the 
+quadrature nodes. For the constant data case, bmom2d.cpp makes use of 
+get_Bmoments2d_const(Bmoment, n, v1, v2, v3) which computes the B-moments of order n associated with 
+the constant data 1. The computed B-moments are stored in the array called Bmoment. Once the call to 
+either get_Bmoments2d or get_Bmoments2d_const has been made, the user should insert code lines in order 
+to make use of the Bmoment array, as it is destroyed at the end of the sample code.
+
+mass2d.cpp: Sample file for the computation of the H^1 mass matrix in two dimensions. For the variable data 
+case, it makes use of the get_mass2d(massMat, n, f, Cval, v1, v2, v3, functval) routine which computes 
+the mass matrix of order n on the triangle T = <v1,v2,v3>. The functval argument serves as a flag
+which indicates the input type for the mass matrix coefficients: When functval=0, the routine uses a 
+scalar-valued function f as input, whereas when functval=1, the routine uses the array Cval which 
+contains the coefficient values at the quadrature nodes. For the constant data case, mass2d.cpp 
+makes use of get_mass2d_const(massMat, n, v1, v2, v3) which computes the mass matrix of order n 
+associated with the constant data 1. The computed mass matrix entries are stored in the massMat 
+array. Once the call to either get_mass2d or get_mass2d_const has been made, the user should insert 
+code lines in order to make use of the massMat array, as it is destroyed at the end of the 
+sample code.
+
+convec2d.cpp: Sample file for the computation of the H^1 convective matrix in two dimensions. For the variable 
+data case, it makes use of the get_convec2d(convecMat, n, b, Cval, v1, v2, v3, functval) routine which computes 
+the convective matrix of order n on the triangle T = <v1,v2,v3>. The functval argument serves as a 
+flag which indicates the input type for the convective matrix coefficients: When functval=0, the routine 
+uses a vector-valued function b as input, whereas when functval=1, the routine uses the array Cval which 
+contains the coefficient values at the quadrature nodes. For the constant data case, convec2d.cpp makes 
+use of get_convec2d_const(convecMat, n, v1, v2, v3, vectCoeff) which computes the convective matrix of order n 
+associated with the constant data vectCoeff. The computed convective matrix entries are stored in the 
+convecMat array. Once the call to either get_convec2d or get_convec2d_const has been made, the user should insert 
+code lines in order to make use of the convecMat array, as it is destroyed at the end of the sample code.
+
+stiff2d.cpp: Sample file for the computation of the H^1 stiffness matrix in two dimensions. For the variable data case,
+it makes use of the get_stiffness2d(stiffMat, n, A, Cval, v1, v2, v3, functval) routine which computes the stiffness 
+matrix of order n on the triangle T = <v1,v2,v3>. The functval argument serves as a flag which indicates the input 
+type for the stiffness matrix coefficients: When functval=0, the routine uses a (symmetric) matrix-valued function A as input, 
+whereas when functval=1, the routine uses the array Cval which contains the coefficient values at the quadrature nodes. 
+For the constant data case, stiff2d.cpp makes use of get_stiffness2d_const(stiffMat, n, v1, v2, v3, Coeff) which computes 
+the stiffness matrix of order n associated with the constant data Coeff. The parameter Coeff contains the upper triangular 
+entries of the constant matrix-valued coefficient associated with the stiffness matrix. The computed stiffness matrix entries 
+are stored in the stiffMat array. Once the call to either get_stiffness2d or get_stiffness2d_const has been made, the user should
+insert code lines in order to make use of the stiffMat array, as it is destroyed at the end of the sample code.
+
+branching2d.cpp: Sample file which allows the user to choose which 2D H^1 elemental quantity to compute. Depending on
+the elemental quantity to be computed, this file contains various lines contained in the 2D sample codes.
+
+mains2d.cpp: Application file used for debugging and running cpu timing experiments presented in [1] when
+considering 2D H^1 finite elements. It relies on low-level routines for the computation of the elemental quantities.
+
+bmom3d.cpp: Sample file for the computation of the B-moments in three dimensions. It makes use of the
+get_Bmoments3d(Bmoment, n, f, Cval, v1, v2, v3, v4, functval) routine which computes B-moments of order n 
+on the tetrahedron T = <v1,v2,v3,v4>. The functval argument serves as a flag which indicates the input type 
+for the B-moments' coefficients: When functval=0, the routine uses a scalar-valued function f as input, 
+whereas when functval=1, the routine uses the array Cval which contains the coefficient values at the 
+quadrature nodes. The computed B-moment entries are stored in the array called Bmoment. For the constant 
+data case, bmom3d.cpp makes use of get_Bmoments3d_const(Bmoment, n, v1, v2, v3, v4) which computes the 
+B-moments of order n associated with the constant data 1. The computed B-moments are stored in the array 
+called Bmoment. Once the call to either get_Bmoments3d or get_Bmoments3d_const has been made, the user should 
+insert code lines in order to make use of the Bmoment array, as it is destroyed at the end of the sample code.
+
+mass3d.cpp: Sample file for the computation of the H^1 mass matrix in three dimensions. For the variable data 
+case, it makes use of the get_mass3d(massMat, n, f, Cval, v1, v2, v3, v4, functval) routine which computes 
+the mass matrix of order n on the tetrahedron T = <v1,v2,v3,v4>. The functval argument serves as a flag
+which indicates the input type for the mass matrix coefficients: When functval=0, the routine uses a 
+scalar-valued function f as input, whereas when functval=1, the routine uses the array Cval which 
+contains the coefficient values at the quadrature nodes. For the constant data case, mass3d.cpp 
+makes use of get_mass3d_const(massMat, n, v1, v2, v3, v4) which computes the mass matrix of order n 
+associated with the constant data 1. The computed mass matrix entries are stored in the massMat 
+array. Once the call to either get_mass3d or get_mass3d_const has been made, the user should insert 
+code lines in order to make use of the massMat array, as it is destroyed at the end of the 
+sample code.
+
+convec3d.cpp: Sample file for the computation of the H^1 convective matrix in three dimensions. For the variable 
+data case, it makes use of the get_convec3d(convecMat, n, b, Cval, v1, v2, v3, v4, functval) routine which computes 
+the convective matrix of order n on the tetrahedron T = <v1,v2,v3,v4>. The functval argument serves as a 
+flag which indicates the input type for the convective matrix coefficients: When functval=0, the routine 
+uses a vector-valued function b as input, whereas when functval=1, the routine uses the array Cval which 
+contains the coefficient values at the quadrature nodes. For the constant data case, convec3d.cpp makes 
+use of get_convec3d_const(convecMat, n, v1, v2, v3, v4, vectCoeff) which computes the convective matrix of order n 
+associated with the constant data vectCoeff. The computed convective matrix entries are stored in the 
+convecMat array. Once the call to either get_convec3d or get_convec3d_const has been made, the user should insert 
+code lines in order to make use of the convecMat array, as it is destroyed at the end of the sample code.
+
+stiff3d.cpp: Sample file for the computation of the H^1 stiffness matrix in three dimensions. For the variable data case,
+it makes use of the get_stiffness3d(stiffMat, n, A, Cval, v1, v2, v3, v4, functval) routine which computes the stiffness 
+matrix of order n on the tetrahedron T = <v1,v2,v3,v4>. The functval argument serves as a flag which indicates the input 
+type for the stiffness matrix coefficients: When functval=0, the routine uses a (symmetric) matrix-valued function A as input, 
+whereas when functval=1, the routine uses the array Cval which contains the coefficient values at the quadrature nodes. 
+For the constant data case, stiff3d.cpp makes use of get_stiffness3d_const(stiffMat, n, v1, v2, v3, v4, Coeff) which computes 
+the stiffness matrix of order n associated with the constant data Coeff. The parameter Coeff contains the upper triangular 
+entries of the constant matrix-valued coefficient associated with the stiffness matrix. The computed stiffness matrix entries 
+are stored in the stiffMat array. Once the call to either get_stiffness3d or get_stiffness3d_const has been made, the user should
+insert code lines in order to make use of the stiffMat array, as it is destroyed at the end of the sample code.
+
+branching3d.cpp: Sample file which allows the user to choose which 3D H^1 elemental quantity to compute. Depending on
+the elemental quantity to be computed, this file contains various lines contained in the 3D sample codes.
+
+mains3d.cpp: Application file used for debugging and running cpu timing experiments presented in [1]
+when considering 3D H^1 finite elements. It relies on low-level routines for the computation of the 
+H^1 elemental quantities.
+
+load2dCurl.cpp: Sample file for the computation of the H(curl) load vector in two dimensions. It makes 
+use of the get_load2dCurl(loadVect, n, F, Cval, v1, v2, v3, functval) routine which computes the load vector
+of order n on the triangle T = <v1,v2,v3>. The functval argument serves as a flag which indicates 
+the input type for the load vector coefficients: When functval=0, the routine uses a vector-valued function
+F as input, whereas when functval=1, the routine uses the array Cval which contains the coefficient values at the 
+quadrature nodes. The computed load vector entries are stored in the array called loadVect. Once the call to 
+get_load2dCurl has been made, the user should insert code lines in order to make use of the loadVect array, 
+as it is destroyed at the end of the sample code. In the proposed code, the Whitney's lowest order edge elements 
+correspond to n=1.
+
+mass2dCurl.cpp: Sample file for the computation of the H(curl) mass matrix in two dimensions. It makes 
+use of the get_mass2dCurl(massMat, n, Kappa, Cval, v1, v2, v3, functval) routine which computes the H(curl)
+mass matrix of order n on the triangle T = <v1,v2,v3>. The functval argument serves as a flag which indicates 
+the input type for the mass matrix coefficients: When functval=0, the routine uses a (symmetric) matrix-valued 
+function Kappa as input, whereas when functval=1, the routine uses the array Cval which contains the coefficient 
+values at the quadrature nodes. The computed mass matrix is stored in the array called massMat. Once the call to 
+get_mass2dCurl has been made, the user should insert code lines in order to make use of the massMat array, 
+as it is destroyed at the end of the sample code. In the proposed code, the Whitney's lowest order edge elements 
+correspond to n=1.
+
+stiff2dCurl.cpp: Sample file for the computation of the non-zero entries of the H(curl) stiffness matrix in two dimensions.
+Indeed, since the H(curl) finite element basis explicitly contains gradients, the corresponding stiffness matrix block is
+zero. As a result, the presented code only compute the non-gradient stiffness matrix entries. The sample file stiff2d.cpp 
+makes use of the get_stiffness2dCurl(stiffMat, n, A, Cval, v1, v2, v3, functval) routine which computes the H(curl)
+stiffness matrix of order n on the triangle T = <v1,v2,v3>. The functval argument serves as a flag which indicates 
+the input type for the stiffness matrix coefficients: When functval=0, the routine uses a scalar-valued function A as input, 
+whereas when functval=1, the routine uses the array Cval which contains the coefficient values at the quadrature nodes. 
+The computed stiffness matrix entries are stored in the array called stiffMat. Once the call to get_stiffness2dCurl has been 
+made, the user should insert code lines in order to make use of the stiffMat array, as it is destroyed at the end of the 
+sample code. In the proposed code, the Whitney's lowest order edge elements correspond to n=1.
+
+cpu_timing_Residuals2dCurl.cpp: Sample file for reproducing the numerical experiments presented in [2].
+It makes use of the routine time_residual_Comp( n, q, v1, v2, v3, nbIter, average) which produces the cpu timings 
+involved in the computation of the residuals appearing in mass-conservation and constitutive equations. In the
+above-mentioned equation, n is the polynomial order, q is the order of the Stroud rule used, and v1, v2, v3
+are the triangle's vertices. The residuals computation is executed nbIter times, and the resulting average is
+the value returned by the routine time_residual_Comp. In order to follow the approach given in [2] for handling
+the various B-moments order involved in the residuals' computation, you can use the macro DIV_ARTICLE described 
+in the next section. In the numerical experiments, the iterates u^ell and p^ell discussed in [2] are respectively 
+replaced with random linear combinations of the shape functions of the H(curl) and H^1 finite elements. Since
+we are interested in the asymptotic behaviour of the numerical cost, we choose the function f appearing in the 
+mass-conservation residuals to be zero. In addition, the routines computing the cpu timing for the residuals computation
+only cover the case where the polynomial order n is strictly greater to 1.
+
+mains2dCurl.cpp: Application file used for debugging and running cpu timing experiments involving 2D H(curl) finite elements. 
+It relies on low-level routines for the computation of the H(curl) elemental quantities.
+
+
+Precompiler options
+-------------------
+
+The following options can be activated or deactivated in Makefile
+
+
+CHECK : displays the computed elemental quantity onto the terminal. This option can be used for debugging purposes.
+
+
+GAUJAC : computes Gauss-Jacobi quadrature weights and centres using GaussJacobi.cpp which are needed for the computation
+of elemental quantities associated with variable coefficients. When this option is turned off, the Gaussian quadrature 
+weights and nodes are read from JacobiGaussNodes.h. You can use your own implementation for computing Gauss-Jacobi quadrature
+weights and centres, provided that the output is consistent with those used by GaussJacobi.cpp or JacobiGaussNodes.h which are 
+explained below.
+
+		
+PRECOMP : computes the B-moments by storing weighted data values at the Stroud nodes into precomputed arrays. The data weights
+are produced by the Stroud quadrature rule. The PRECOMP option is related to the computation of the elemental quantities 
+associated with variable data. When turned off, the data values are computed at each Stroud node.
+
+
+FUNCT_VAL : when computing elemental quantities associated with variable data, only the values of the coefficients at the 
+Stroud nodes are needed. Hence, instead of a function, an array of coefficient values at the Stroud nodes can be used as 
+input for the coefficients. This option is used by activating the FUNCT_VAL macro. It only effects the example files.
+
+DIV_ARTICLE: follows the approach presented in [2] for handling various B-moment orders involved in the residuals'
+computation. In particular, the Whitney components of the residuals appearing in the mass-conservation equation 
+are computed using B-moments of order n, instead of B-moments of order 1. Moreover, since the curl of the Whitney
+functions are constant, the corresponding components appearing in the constitutive equation are not taken into
+consideration in the cpu timing computation.
+
+In our examples bmom2d.cpp, convec2d.cpp, mass2d.cpp, stiff2d.cpp, bmom3d.cpp, convec3d.cpp, mass3d.cpp, stiff3d.cpp,
+load2dCurl.cpp, mass2dCurl.cpp, stiff2dCurl.cpp, the element system matrices are computed by default using a function 
+definition as data input. Instead, the values of the data at the quadrature nodes are required if the macro FUNCT_VAL 
+is activated.
+
+
+Gauss Jacobi quadrature weights and centres
+-------------------------------------------
+
+JacobiGaussNodes.h : The JacobiGaussNodes.h file contains three arrays called legendre, jacobi and jacobi2 which respectively
+contain the Gauss-Jacobi quadrature weights and centres with (alpha,beta)=(0,0), (alpha,beta)=(1,0) and (alpha,beta)=(2,0). 
+The above-mentioned arrays are declared as legendre[2][85][85], jacobi[2][85][85] and jacobi2[2][85][85]. Since it is assumed 
+that the elemental quantities to be computed are of (polynomial) order at least equal to 1, the minimal order for the Gaussian 
+quadrature rule to be used is 2. Hence, the array legendre[0] contains the Legendre quadrature weights from degree 2 to 80, 
+whereas legendre[0] contains the corresponding quadrature centres. The entries of jacobi and jacobi2 are defined similarly.
+You can use your own precomputed Gauss-Jacobi quadrature weights and centres, provided that they are stored in the same way.
+
+GaussJacobi.cpp : computes Gauss-Jacobi quadrature weights and nodes when GAUJAC option is activated. GaussJacobi.cpp is not
+provided with this package by copyright reasons. It includes the routine
+void gaujac(double *x, double *w, int n, float alf, float bet) from Chapter 4 of the book W.H.Press, S.A. Teukolsky, W.T. Vetterling 
+and B.P. Flannery, Numerical Recipes in C. The Art of Scientific Computing. Second Edition, Cambridge University Presss, 1992. 
+http://www.nr.com/oldverswitcher.html
+Here n is the order of the Gaussian quadrature rule whereas x and w are respectively used to store the computed Gaussian 
+centres and weights with (alpha,beta)=(alf,bet). Instead of gaujac, any other high accuracy implementation of the Gauss-Jacobi quadrature
+rule can be used provided that a routine with the same syntax and function is stored in the file named GaussJacobi.cpp. 
+
+
+Computation of the H(div) elemental quantities.
+----------------------------------------------
+
+The H(div) elemental stiffness matrix can directly be computed using the H(curl) stiffness
+matrix routines. In order to compute the H(div) load vector associated with the 
+vector-valued function f = (f1,f2)^tr, you simply need to call the H(curl) load vector 
+routine using (f2,-f1) as input for the load vector coefficients. Similarly, in order
+to compute the H(div) mass matrix associated with the matrix-valued coefficient
+function kappa=(a_{ij})_{i,j=1,2}, you simply need to call the H(curl) mass matrix
+routine using the matrix kappaTilda defined by
+
+             kappaTilda :=  a_{22}  -a_{21}
+						   -a_{12}   a_{11}
+
+as input for the mass matrix coefficients.
+
+
+
+
+INSTALLATION
+-------------
+
+*	Extract BBFEM from the archive
+* Edit Makefile if needed to adjust the precompiler options
+* If using GAUJAC option, create a file with name GaussJacobi.cpp containing the routine gaujac as explained above
+*	Run:
+		make
+		make examples
+
+
+EXAMPLES
+--------
+
+The examples for computing the elemental quantities  can be run by the following commands.
+
+
+1) for H^1 2D finite elements:
+	./mass2d
+	./convec2d
+	./stiff2d
+	./bmom2d
+	./mass2d_const
+	./convec2d_const
+	./stiff2d_const
+	./branching2d
+
+2) for H^1 3D finite elements:
+	./mass3d
+	./convec3d
+	./stiff3d
+	./bmom3d
+	./mass3d_const
+	./convec3d_const
+	./stiff3d_const
+	./branching3d
+
+3) for H(curl) 2D finite elements:
+	./load2dCurl
+	./mass2dCurl
+	./stiff2dCurl
+	./branching2dCurl
+
+The executables with "const" appended compute the elemental quantities which are associated with piecewise 
+constant coefficients. 
+
+Running "branching2d", "branching3d" or "branching2dCurl": the first two commands allows you to choose which 
+2D and 3D H^1 elemental quantity is to be computed, whereas the last one gives you the option to select which 
+2D H(curl) elemental quantity to compute. The H^1 commands include the option of choosing whether the data associated with 
+the elemental quantity is constant or variable. For the case where the data is variable, you are prompted to
+decide whether or not an array containing the data values at the Stroud nodes is used as input for 
+the coefficients. As compared with the other executables for computing elemental quantities, "branching2d", "branching3d"
+and "branching2dCurl" are the "all-in-one" versions which include the ability to compute any elemental quantity, as well 
+as the option to set the type of data which is used as input for the coefficients.
+
+In order to compute the matrices for your own data, modify the example files bmom2d.cpp, convec2d.cpp, mass2d.cpp,  
+stiff2d.cpp, load2dCurl.cpp, mass2dCurl.cpp, stiff2dCurl.cpp or branching2dCurl.cpp accordingly.
+ 
+		
+
+The routines for computing the H^1 2D elemental quantities have the following syntaxes:
+
+
+get_Bmoments2d_const(Bmoment, n, v1, v2, v3):
+	Bmoment is the array where the B-moments are being stored
+	n is the polynomial order
+	v1, v2, v3 are the element vertices
+
+get_mass2d_const (massMat, n, v1, v2, v3):
+	massMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	v1, v2, v3 are the element vertices
+
+
+get_mass2d(massMat, n, f, Cval, v1, v2, v3, functval):
+	massMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	f is the scalar-valued function associated with the mass matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether f or Cval is used as input for the mass matrix coefficients
+
+
+get_convec2d_const (convecMat, n, v1, v2, v3, vectCoeff):
+	convecMat is the array where the convective matrix entries are being stored
+	n is the polynomial order
+	v1, v2, v3 are the element vertices
+	vectCoeff is the constant coefficient vector associated with the convective matrix
+
+
+get_convec2d(convecMat, n, b, Cval, v1, v2, v3, functval):
+	convecMat is the array where the convective matrix entries are being stored
+	n is the polynomial order
+	b is the vector-valued function associated with the convective matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether b or Cval is used as input for the convective matrix coefficients
+
+
+get_stiffness2d_const (stiffMat, n, v1, v2, v3, Coeff):
+	stiffMat is the array where the stiffness matrix entries are being stored
+	n is the polynomial order
+	Coeff contains the upper triangular values of the symmetric matrix-valued coefficient associated with the stiffness matrix
+	v1, v2, v3 are the element vertices
+
+
+get_stiffness2d(stiffMat, n, A, Cval, v1, v2, v3, functval):
+	stiffMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	A is the matrix-valued function associated with the stiffness matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether A or Cval is used as input for the stiffness matrix coefficients
+
+
+get_Bmoments2d(Bmoment, n, f, Cval, v1, v2, v3, functval):
+	Bmoment is the array where the B-moments are being stored
+	n is the polynomial order
+	f is the scalar-valued function associated with the B-moments
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether f or Cval is used as input for the B-moments' coefficients
+
+
+
+The routines for computing the 3D elemental quantities have the following syntaxes:
+
+
+get_Bmoments3d_const(Bmoment, n, v1, v2, v3, v4):
+	Bmoment is the array where the B-moments are being stored
+	n is the polynomial order
+	v1, v2, v3, v4 are the element vertices
+
+get_mass3d_const (massMat, n, v1, v2, v3, v4):
+	massMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	v1, v2, v3, v4 are the element vertices
+
+get_mass3d(massMat, n, f, Cval, v1, v2, v3, v4, functval):
+	massMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	f is the scalar-valued function associated with the mass matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3, v4 are the element vertices
+	functval is a flag which determines whether f or Cval is used as input for the mass matrix coefficients
+
+get_convec3d_const (convecMat, n, v1, v2, v3, v4, vectCoeff):
+	convecMat is the array where the convective matrix entries are being stored
+	n is the polynomial order
+	v1, v2, v3, v4 are the element vertices
+	vectCoeff is the constant coefficient vector associated with the convective matrix
+
+get_convec3d(convecMat, n, b, Cval, v1, v2, v3, v4, functval):	
+	convecMat is the array where the convective matrix entries are being stored
+	n is the polynomial order
+	b is the vector-valued function associated with the convective matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3, v4 are the element vertices
+	functval is a flag which determines whether b or Cval is used as input for the convective matrix coefficients
+
+get_stiffness3d_const (stiffMat, n, v1, v2, v3, v4, Coeff):
+	stiffMat is the array where the stiffness matrix entries are being stored
+	n is the polynomial order
+	Coeff contains the upper triangular values of the symmetric matrix-valued coefficient associated with the stiffness matrix
+	v1, v2, v3, v4 are the element vertices
+
+get_stiffness3d(stiffMat, n, A, Cval, v1, v2, v3, v4, functval):	
+	stiffMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	A is the matrix-valued function associated with the stiffness matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3, v4 are the element vertices
+	functval is a flag which determines whether A or Cval is used as input for the stiffness matrix coefficients
+
+get_Bmoments3d(Bmoment, n, f, Cval, v1, v2, v3, v4, functval):
+	Bmoment is the array where the B-moments are being stored
+	n is the polynomial order
+	f is the scalar-valued function associated with the B-moments
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3, v4 are the element vertices
+	functval is a flag which determines whether f or Cval is used as input for the B-moments' coefficients
+
+
+
+The routines for computing the H(curl) 2D elemental quantities have the following syntaxes:
+
+
+get_load2dCurl(loadVect, n, F, Cval, v1, v2, v3, functval);
+	loadVect is the array where the load vector entries are being stored
+	n is the polynomial order
+	F is the vector-valued function associated with the load vector
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether F or Cval is used as input for the load vector coefficients
+
+get_mass2dCurl(massMat, n, Kappa, Cval, v1, v2, v3, functval)
+	massMat is the array where the mass matrix entries are being stored
+	n is the polynomial order
+	Kappa is the (symmetric) matrix-valued function associated with the mass matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether Kappa or Cval is used as input for the mass matrix coefficients
+
+get_stiffness2dCurl(stiffMat, n, A, Cval, v1, v2, v3, functval)
+	stiffMat is the array where the non-zero stiffness matrix entries are being stored
+	n is the polynomial order
+	A is the scalar-valued function associated with the stiffness matrix
+	Cval is an array which contains the coefficients values at the quadrature nodes
+	v1, v2, v3 are the element vertices
+	functval is a flag which determines whether A or Cval is used as input for the stiffness matrix coefficients
+
+
+In order to access the entries of the computed elemental quantities, the following indexing
+routines can be used in two dimensions:
+
+position2d (eta1, eta2): returns the index corresponding to Bmoment[eta1,eta2,n-eta1-eta2] when PRECOMP
+is used for computing the B-moments. This routine is also used for indexing the entries of the elemental
+matrices, regardless of whether or not PRECOMP is used. For example, the mass
+matrix entry on the row corresponding to (eta1,eta2,n-eta1-eta2) and on the column associated with
+(xi1,xi2,n-xi1-xi2) is given by massMat[position2d(eta1,eta2)][position2d(xi1,xi2)], where massMat is
+the array used to store the computed mass matrix. The entries of the 2D H(curl) load vector are also
+indexed by means of position2d.
+
+position2d2(eta1, eta2, n): When the B-moment vector is computed without the use of precomputed arrays,
+the indexing of its entries is done using position2d2 which depends on the polynomial order n. 
+More precisely, when PRECOMP is turned off, position2d2(eta1,eta2,n) returns the position of the row 
+where Bmoment[eta1,eta2,n-eta1-eta2] is stored.
+.
+
+For the three-dimensional case, the next indexing routines are used:
+
+position3d (eta1, eta2, eta3): returns the index corresponding to Bmoment[eta1,eta2,eta3,n-eta1-eta2-eta3] 
+when PRECOMP is used for computing the B-moments. This routine is also used for indexing the entries of the mass, 
+convective and stiffness matrices, regardless of whether or not PRECOMP is used. For example, the mass
+matrix entry on the row corresponding to (eta1,eta2,eta3,n-eta1-eta2-eta3) and on the column associated with
+(xi1,xi2,xi3,n-xi1-xi2-xi3) is given by massMat[position3d(eta1,eta2,eta3)][position3d(xi1,xi2,xi3)], where massMat is
+the array used to store the computed mass matrix.
+
+position3d2(eta1, eta2, eta3, n): When the B-moment vector is computed without the use of precomputed arrays,
+the indexing of its entries is done using position3d2 which depends on the polynomial order n. 
+More precisely, when PRECOMP is turned off, position2d2(eta1,eta2,eta3,n) returns the position of the row where 
+Bmoment[eta1,eta2,eta3,n-eta1-eta2-eta3] is stored.
+
+
+LOW-LEVEL ROUTINES
+------------------
+
+It is possible to use instead the low-level routines as in mains2d.cpp or mains3d.cpp, and repeat our experiments in [1].
+To explore this, run the command	
+
+make all
+
+
+This produces a number of executables explained below.
+		
+	./mass2d_const_low
+	./convec2d_const_low
+	./stiff2d_const_low
+	./mass2d_low
+	./convec2d_low
+	./stiff2d_low
+	./bmom2d_low
+	./mass3d_const_low
+	./convec3d_const_low
+	./stiff3d_const_low
+	./mass3d_low
+	./convec3d_low
+	./stiff3d_low
+	./bmom3d_low
+
+are the analogues of the previous set of commands, with the exception that the high-level routines
+for the computation of the elemental quantities are replaced by low-level routines not decribed in this README. 
+
+The commands for the cpu timing experiments are as follows:
+	./cpu_mass2d
+	./cpu_convec2d
+	./cpu_stiff2d
+	./cpu_bmom2d
+	./cpu_mass2d_const
+	./cpu_convec2d_const
+	./cpu_stiff2d_const
+	./cpu_mass3d
+	./cpu_convec3d
+	./cpu_stiff3d
+	./cpu_bmom3d
+	./cpu_mass3d_const
+	./cpu_convec3d_const
+	./cpu_stiff3d_const
+
+When running either of the cpu timing command lines, the user is prompted to enter a value
+for the number of iterations. This is the number of times the computation of the elemental
+quantity is executed. The output is simply given by the averaged cpu timing.
+
+
+It is also possible to use low-level routines for the computation of H(curl) elemental quantities, as 
+in mains2dCurl.cpp. To explore this, run the command
+
+	make all_Curl
+
+
+This produces a number of executables explained below.
+		
+	./mass2dCurl_low
+	./stiff2dCurl_low
+	./load2dCurl_low
+
+are the analogues of the commands ./mass2dCurl, ./stiff2dCurl and ./load2dCurl, with the exception that 
+the high-level routines for the computation of the elemental quantities are replaced by low-level routines 
+not decribed in this README. 
+
+
+The commands for the cpu timing experiments are as follows:
+	./cpu_mass2dCurl
+	./cpu_stiff2dCurl
+	./cpu_load2dCurl
+	./cpu_res2dCurl
+
+Similarly to the H^1 case, the user is prompted to enter a value for the number of iterations. 
+This is the number of times the computation of the H(curl) elemental quantity is executed. 
+The output is simply given by the averaged cpu timing. 
