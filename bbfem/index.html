@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>
+BBFEM
+</title>
+</head>
+<body>
+
+<BASEFONT SIZE=+1>
+
+<center>
+<h2><b>BBFEM: Bernstein-Bézier Finite Elements</b></h2></center>
+
+
+BBFEM is a C++ software library  available under the terms of the GNU General Public License.
+
+<br><br>
+
+BBFEM enables efficient computation of the elemental quantities (load vector, mass matrix, 
+stiffness matrix, convective matrix) associated with the finite elements based on Bernstein polynomial
+shape functions. The library implements the algorithms of [1] for the H1 finite elements 
+on triangles and tetrahedra  as well as H(curl) elements on triangles  described in [3]. Since H(curl) is isomorphic
+to H(div) in 2D, the H(curl) routines can also be used for computing H(div) elemental quantities [2].
+
+
+<br><br>
+
+[1] M. Ainsworth, G. Andriamaro, and O. Davydov. Bernstein-Bézier finite
+elements of arbitrary order and optimal assembly procedures. SIAM J. Sci.
+Comp., 33:3087-3109, 2011.
+
+<br>
+
+[2] M. Ainsworth, G. Andriamaro, and O. Davydov. A Bernstein-Bézier basis
+for arbitrary order Raviart-Thomas finite elements, Constr. Approx., 41 (2015), 1-22.
+
+<br>
+
+[3] G. Andriamaro. Bernstein-Bézier Techniques and Optimal Algorithms 
+in Finite Element Analysis, PhD thesis, University of Strathclyde,
+Department of Mathematics and Statistics, Glasgow, UK, 2013.
+
+
+<br><br>
+
+Send bugs, patches, comments or suggestions on BBFEM to
+Gaelle Andriamaro <a href="mailto:amg.gaelle@gmail.com">amg.gaelle@gmail.com</a>
+
+
+
+<br><br>
+
+<b>Download:</b>
+<br>
+<a href="BBFEM-1.00.tar.gz">C++ code v.1.00 (gzipped tar archive)</a>
+<br>
+<a href="README">README, including installation and usage notes</a>
+<br>
+<a href="CHANGES">Change log</a>
+
+<p>
+<hr>
+<br><a href="../index.html" target="_blank">Homepage of Oleg Davydov</a>
+
+
+</body>
+</html>
+
