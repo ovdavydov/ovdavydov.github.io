@@ -1,25 +1,26 @@
 Richard Franke's test data can now be downloaded from this site in the 
-same way as described below in this file.
+same way as described below in this file, replacing the following part of the url
+http://www.math.nps.navy.mil/~rfranke/
+by
+https://oleg-davydov.de/tsfit/Franke_test_data/
 
 For example, for the MATLAB code of the famous Franke Test Function, open
 
-http://www.tsfit.de/Franke_test_data/sdprog/f1.m 
-
+https://oleg-davydov.de/tsfit/Franke_test_data/sdprog/f1.m 
 
 As another example, the following file contains the 100 point data set 
 used in the report 
 R. Franke, A critical comparison of some methods for interpolation of 
 scattered data, Report NPS-53-79-003, Naval Postgraduate School, 1979.
 
-http://www.tsfit.de/Franke_test_data/sddata/ds3.m 
-
+https://oleg-davydov.de/tsfit/Franke_test_data/sddata/ds3.m 
 
 See also www.richardfranke.com The homepage on www.math.nps.navy.mil 
 as well as anonymous ftp mentioned below may not be available anymore.
 
 
                                   Oleg Davydov 
-				  7 May 2009 (links updated 10 Feb 2014)
+				  7 May 2009 (last updated 03 Oct 2021)
 
 ========================================================================
 
