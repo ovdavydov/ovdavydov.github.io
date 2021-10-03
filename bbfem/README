@@ -1,4 +1,4 @@
-         Bernstein-Bezier Finite Element Method (BBFEM)
+         Bernstein-Bézier Finite Element Method (BBFEM)
 
 Version 1.00
 
@@ -12,15 +12,15 @@ and tetrahedra  as well as H(curl) elements on triangles  described in [3]. Sinc
 to H(div) in 2D, the H(curl) routines can also be used for computing H(div) elemental quantities [2].
 
 
-[1] M. Ainsworth, G. Andriamaro, and O. Davydov. Bernstein-Bezier finite
+[1] M. Ainsworth, G. Andriamaro, and O. Davydov. Bernstein-Bézier finite
 elements of arbitrary order and optimal assembly procedures. SIAM J. Sci.
 Comp., 33 (2011), 3087-3109.
 
 [2] M. Ainsworth and G. Andriamaro and O. Davydov, 
-A Bernstein-B�zier basis for arbitrary order Raviart-Thomas finite elements, 
+A Bernstein-Bézier basis for arbitrary order Raviart-Thomas finite elements, 
 Constr. Approx., 41 (2015), 1-22.
 
-[3] G. Andriamaro. Bernstein-Bezier Techniques and Optimal Algorithms 
+[3] G. Andriamaro. Bernstein-Bézier Techniques and Optimal Algorithms 
 in Finite Element Analysis, PhD thesis, University of Strathclyde,
 Department of Mathematics and Statistics, Glasgow, UK, 2013.
 
@@ -85,7 +85,7 @@ Comments
 
 bbfem.cpp, bbfem.h, bbfem2dCurl.cpp and bbfem2dCurl.h are the source files needed in order to create the bbfem library. 
 The library is created by running the command "make" in the terminal. Once the library has been created, examples for
-computing the elemental quantities using Bernstein-Bezier finite elements are given in the various sample
+computing the elemental quantities using Bernstein-Bézier finite elements are given in the various sample
 files, listed as:
 
 bmom2d.cpp: Sample file for the computation of the B-moments in two dimensions. It makes use of the
@@ -636,3 +636,4 @@ The commands for the cpu timing experiments are as follows:
 Similarly to the H^1 case, the user is prompted to enter a value for the number of iterations. 
 This is the number of times the computation of the H(curl) elemental quantity is executed. 
 The output is simply given by the averaged cpu timing. 
+

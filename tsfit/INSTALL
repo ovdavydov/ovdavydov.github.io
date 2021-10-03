@@ -1,0 +1,98 @@
+Installation Notes for Linux:
+
+(1) We use BLAS and LAPACK linear algebra FORTRAN libraries. (Should a linear 
+algebra package different from LAPACK be used, you will need to write your own 
+interface code in src/linalg.c and change init.mk accordingly.)
+
+Check that BLAS and LAPACK libraries are installed on your system. 
+They are included in various linux distributions, e.g. as 
+/usr/lib/libblas.a and /usr/lib/liblapack.a
+The homepages of both packages are http://www.netlib.org/blas/
+and http://www.netlib.org/lapack/ respectively.
+
+Hardware optimized versions of BLAS and LAPACK can also be used, see e.g. ATLAS 
+http://math-atlas.sourceforge.net/
+
+Note that the calling names of the FORTRAN routines in our LAPACK interface 
+code in TSFIT/src/linalg.c are valid for linux and gcc (lower case names with 
+underscore appended at the end). These may need adjustment on a different 
+platform.
+
+(2) Download TSFIT from http://www.staff.uni-giessen.de/odavydov/tsfit/index.html
+and type 
+  gunzip -c tsfit-1.00.tar.gz | tar xvf -
+This will unpack the package into the directory TSFIT.
+
+(3) Edit lapack.mk to edit LINALG_INC which gives the paths to the BLAS and LAPACK libraries.
+LINALG_LIB is left blank in lapack.mk, but it might be needed if a different linear algebra 
+library is used.
+
+(4) Edit init.mk to adjust it to your system.
+LINALG_INTERFACE is set to LAPACK and lapack.mk is included, both to be replaced if a different
+linear algebra library is used.
+
+Choose whether gcc or g++ compiler is used by editing the definition of CC in init.mk
+
+(5) From TSFIT directory, type 
+  make
+This will create the library  lib/libTSFIT.a and example binaries in the
+directory examples.
+
+(6) To test the installation, type
+  cd examples
+  example1
+Test output will be created  (output1.txt) which contains grid evaluations of
+approximate Franke test function computed using scattered data from f1_ds3. 
+Exact evaluations are in f1.txt. 
+The Matlab/Octave script (script.m) allows to compare output1.txt with f1.txt,
+producing graphical output and the following text:
+  spline = output1
+  max = 0.0130
+  rms = 0.0023
+  mean = 0.0014
+Files README_EXAMPLES and FUNCTIONS contain further information about examples
+and high level functions used in them.
+
+(7) Examples 5-8 require additional data sets that can be downloaded at
+http://www.staff.uni-giessen.de/odavydov/tsfit/data_sets.tar.gz
+Store data_sets.tar.gz in TSFIT/examples, and type 
+  gunzip -c data_sets.tar.gz | tar xvf -
+	
+**************************************************************************************************	
+
+Installation Notes for Windows Visual Studio C++ 2010:
+
+(1) Install BLAS/LAPACK libraries for Windows on your computer. 
+We have tested the following pre-built static 32 bit library: 
+libblas.dll, libblas.lib, liblapack.dll, liblapack.lib 
+downloadable from 
+http://icl.cs.utk.edu/lapack-for-windows/libraries/VisualStudio/3.4.1/Dynamic-MINGW/Win32/
+In addition,  MinGW runtime DLLs libgfortran-3.dll, libquadmath-0.dll and libgcc_s_dw2-1.dll will be 
+needed at run time. See http://icl.cs.utk.edu/lapack-for-windows for further details.
+
+NOTE: This BLAS/LAPACK library is built with Fortran name mangling assumed in TSFIT (lower case plus an 
+underscore: see dgesdd_ dgglse_ dgemv_ dgemm_ in linalg.c). If a different name mangling convention is 
+used, please edit linalg.c accordingly.
+
+(2) Create a new Win32 Console Project
+
+(3) Add TSFIT source files: Store them on your computer, then right click in the Project 
+Explorer window on Source Files, choose Add, Existing Item and add all *.c and *.h files 
+of src as well as one of the example files, e.g. examples/example1.c
+
+(4) Link the header files directory: Choose Project, Properties, in the new window 
+go to VC++ Directions, Include Directories and add the path to the src directory of TSFIT on your computer
+
+(5) Link BLAS/LAPACK libraries to your project: Choose Project, Properties, in the new window 
+go to Linker, then (a) go to General, Additional Library Directories and add the path to the 
+directory where BLAS/LAPACK lirary files are stored, (b) go to Input, Additional Dependencies and
+add the names of *.lib files of the BLAS/LAPACK library, in the above case libblas.lib, liblapack.lib
+
+(6) Add preprocessor definitions: again choose Project, Properties, in the new window go to C/C++,
+Preprocessor, and in Preprocessor Definitions add LAPACK and LINALG_INTERFACE=LAPACK
+
+(7) Turn off "precompiled headers:" in C/C++ as above, choose Precompiled Headers, and turn them off.
+
+(8) Make sure that BLAS/LAPACK DLLs (and MinGW runtime DLLs if using MinGW) and input data files (e.g. 
+examples/f1ds3 for examples 1-4) are either in the path or in the working directory where the executable 
+is stored by Visual Studio.

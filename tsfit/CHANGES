@@ -1,0 +1,48 @@
+====================================================================
+
+Version 1.00, released 18 June 2012.
+
+Changes from version 0.91:
+
+	* The code made C++ compliant by slight modifications in src/SpC2d6D2.h, src/SpC2d6D2.c
+	  and adding extern"C" to the declarations of FORTRAN functions of BLAS/LAPACK in linalg.c
+		To compile with g++ simply choose CC = g++ in init.mk
+	* The code made ISO C89 compliant by removing variable-size arrays in locrbf.c
+	  and linalg.c
+  * Installation notes for Windows Visual Studio C++ 2010 added (see INSTALL)
+	* Reference to a non-ISO header file values.h removed and macros MAXDOUBLE 
+	  defined explicitely
+	* A bug fixed in function 'compute_rbf_loc_appr' in locrbf.c. In the rare case
+	  when rest_dim had the value 0, the program was exiting with a failure giving 
+	  an error message related to the BLAS routine DGEMM.
+	* Linking to g2c in lapack.mk removed as it is not anymore required by the newer versions 
+	  of the gcc compiler
+	* Support for CLAPACK dropped.
+	
+Changes in: src/convert.c, src/datamng.c, src/gmethod.c, src/linalg.c, src/linalg.h, 
+        src/locpoly.c, src/locrbf.c, src/locrbf.h, src/locsearch.c, src/SpC2d6D2.h, src/SpC2d6D2.c,
+				lapack.mk INSTALL README
+
+Removed: clapack.mk
+
+Thanks to Rick Beatson, Evgeny Kyselgov and Alessandro Iurino
+
+
+====================================================================
+
+Version 0.91, released 20 November, 2005.
+
+Changes from version 0.90:
+
+	* BLAS/LAPACK interface in addition to CBLAS/CLAPACK
+	* Improved INSTALL
+	* Target 'clean' added in Makefile
+	
+Changes in: init.mk, clapack.mk, INSTALL, README, src/linalg.c, 
+	src/linalg.h, src/Makefile
+New: lapack.mk, CHANGES
+
+
+====================================================================
+
+Version 0.90 released 2 May, 2005.

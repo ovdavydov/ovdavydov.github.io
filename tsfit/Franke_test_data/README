@@ -1,0 +1,104 @@
+Richard Franke's test data can now be downloaded from this site in the 
+same way as described below in this file.
+
+For example, for the MATLAB code of the famous Franke Test Function, open
+
+http://www.tsfit.de/Franke_test_data/sdprog/f1.m 
+
+
+As another example, the following file contains the 100 point data set 
+used in the report 
+R. Franke, A critical comparison of some methods for interpolation of 
+scattered data, Report NPS-53-79-003, Naval Postgraduate School, 1979.
+
+http://www.tsfit.de/Franke_test_data/sddata/ds3.m 
+
+
+See also www.richardfranke.com The homepage on www.math.nps.navy.mil 
+as well as anonymous ftp mentioned below may not be available anymore.
+
+
+                                  Oleg Davydov 
+				  7 May 2009 (links updated 10 Feb 2014)
+
+========================================================================
+
+                                                      9/28/97
+                                              revised 6/24/99
+
+This file is a copy of the README file on anonymous ftp under
+ftp/pub/franke, except for this added prelude.  To look at the
+files I have available in sddata and sdprog subdirectories, see
+the list below.  To look at any of those files using your browser
+here, just open, for example, the file
+
+http://www.math.nps.navy.mil/~rfranke/sdprog/f1.m
+
+If you have trouble accessing anything you need (or want), send
+me an email with the problem.
+
+                                      Dick Franke
+
+========================================================================
+
+                                               3/23/94
+
+I intend to have various things in here, eventually.  For now there
+are two subdirectories:  sddata and sdprog
+
+Data files in pub/franke/sddata
+               .m denotes a matlab m-file, some are functions,
+                  some are "open" programs.
+
+ akima.m       Akima's 60 points
+ bigsur.dat    Water temperature data off Big Sur, 64 points
+ bigsur.m      m-file for Big Sur water temperature data
+ ds1.m         25 point data set in NPS-53-70-003 (data set 3??)
+ ds2.m         33 point data set in NPS-53-70-003 (data set 2)
+ ds3.m         100 point data set in NPS-53-70-003 (data set 1??)
+ ds4.m         200 points:  ds3 plus 100 based on curvature of f1
+ f1.m          Function 1 from NPS-53-79-001
+ f2.m          Function 2 from NPS-53-79-001
+ f3.m          Function 3 from NPS-53-79-001
+ f4.m          Function 4 from NPS-53-79-001
+ f5.m          Function 5 from NPS-53-79-001
+ f6.m          Function 6 from NPS-53-79-001
+ fergo.m       Ferguson's data, original
+ fergs.m       Ferguson's data, scaled (y x 3)
+ fhk500        500 points designed with functions kes1 and kes2 in mind
+ gniel.m       Function from Nielson - IJNME 15(1978) 308-318.
+ kes1.m        Function inspired by Salkauskas, p. 150 in Curve and Surface
+                      Fitting, Lancaster and Salkauskas.
+ kes2.m        Similar, to kes1, but "harder" to fit, perhaps.
+ mbay.dat      Monterey Bay depth data - 1669 points
+ moth1.m       Moth data from Scientific American
+ moth2.m       Moth data from Scientific American
+ sigmoid.m     Sigmoid function
+ testdata.dat  Compilation of all test data for NPS-53-79-001
+ vde200.dat    F1 at 200 pts, density about proportional to curvature
+ vde200.m      same, as m-file
+ vde500.dat    F1 at 500 pts, density about proportional to curvature
+ vde500.m      same, as m-file
+ vol-3.dat     Thinned section of vol87.dat, 873 pts
+ vol-3t.dat    vol-3.dat less some contours, 678 pts
+ vol3.m        vol-3.dat as m-file
+ vol3t.m       vol-3t.dat as m-file
+ vol87.dat     Glacier contour data, 8345 points
+
+
+
+Programs in pub/franke/sdprog
+     some are m-files, some are Fortran 77.
+
+ f1.m          Function 1 from NPS-53-79-003
+ f2.m          Function 2 from NPS-53-79-003
+ f3.m          Function 3 from NPS-53-79-003
+ f4.m          Function 4 from NPS-53-79-003
+ f5.m          Function 5 from NPS-53-79-003
+ f6.m          Function 6 from NPS-53-79-003
+ ltps.for      Local thin plate splines (CAMWA 8(1982) 273-281.
+ qds.for       Quadratic Shepard method (IJNME 15(1980) 1691-1704.
+ qdt.for       Triangle blended quadratics (IJNME 15(1980) 1691-1704.
+ testf.for     Sample Test programs used in NPS-53-79-003
+
+Last changed:  April 1, 1998 (no April fool)
